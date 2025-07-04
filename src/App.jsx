@@ -1,7 +1,7 @@
 import './App.css';
 import { motion } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -16,6 +16,7 @@ const containerStagger = {
 
 function App() {
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if (location.hash === '#contact') {
@@ -27,6 +28,7 @@ function App() {
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setMenuOpen(false);
   };
 
   return (
@@ -37,16 +39,41 @@ function App() {
       transition={{ duration: 1 }}
     >
       {/* Navbar */}
-      <nav className="bg-white text-black px-6 py-4 shadow-md flex justify-between items-center sticky top-0 z-50">
-        <div className="text-xl font-bold">CIRCUITMIND STUDIOS</div>
-        <div className="flex gap-6 items-center">
-          <ul className="flex gap-6 items-center text-sm font-medium">
-            <li><button onClick={() => scrollToSection('hero')} className="hover:text-blue-600">Home</button></li>
-            <li><button onClick={() => scrollToSection('about')} className="hover:text-blue-600">About</button></li>
-            <li><button onClick={() => scrollToSection('services')} className="hover:text-blue-600">Services</button></li>
-          </ul>
-          <button onClick={() => scrollToSection('contact')} className="border border-black px-4 py-1 font-semibold hover:bg-black hover:text-white transition">CONTACT</button>
+      <nav className="bg-white text-black px-6 py-4 shadow-md sticky top-0 z-50">
+        <div className="flex justify-between items-center max-w-7xl mx-auto">
+          <div className="text-xl font-bold">CIRCUITMIND STUDIOS</div>
+
+          {/* Hamburger */}
+          <div className="md:hidden">
+            <button onClick={() => setMenuOpen(!menuOpen)} className="focus:outline-none">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {menuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+          </div>
+
+          {/* Desktop menu */}
+          <div className="hidden md:flex gap-6 items-center text-sm font-medium">
+            <button onClick={() => scrollToSection('hero')} className="hover:text-blue-600">Home</button>
+            <button onClick={() => scrollToSection('about')} className="hover:text-blue-600">About</button>
+            <button onClick={() => scrollToSection('services')} className="hover:text-blue-600">Services</button>
+            <button onClick={() => scrollToSection('contact')} className="border border-black px-4 py-1 font-semibold hover:bg-black hover:text-white transition">CONTACT</button>
+          </div>
         </div>
+
+        {/* Mobile menu */}
+        {menuOpen && (
+          <div className="md:hidden mt-4 space-y-4 text-sm font-medium">
+            <button onClick={() => scrollToSection('hero')} className="block w-full text-left px-4 py-2 hover:bg-gray-100">Home</button>
+            <button onClick={() => scrollToSection('about')} className="block w-full text-left px-4 py-2 hover:bg-gray-100">About</button>
+            <button onClick={() => scrollToSection('services')} className="block w-full text-left px-4 py-2 hover:bg-gray-100">Services</button>
+            <button onClick={() => scrollToSection('contact')} className="block w-full text-left px-4 py-2 font-semibold border border-black hover:bg-black hover:text-white">CONTACT</button>
+          </div>
+        )}
       </nav>
 
       {/* Hero Section */}
